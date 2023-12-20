@@ -15,12 +15,34 @@ $qry="SELECT * FROM users WHERE email='$email' AND password='$password'";
 
 //4.jalankan query
 $result = mysqli_query($con,$qry);
-if($result){
-    $pesan ='<div class="alert alert-success" role="alert">
-    yeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee!!!
-  </div>';
-}
-else{
+
+//5.Menghitung jumlah hasil query
+$hitung = mysqli_num_rows($result);
+if($hitung > 0){
+
+//proses login
+ //Mengambil seluruh data login
+ $data = mysqli_fetch_array($result);
+ $id = $data['id'];
+ $nama = $data['nama'];
+
+ //pembuatan session
+ $_SESSION['id'] = $id;
+ $_SESSION['snama'] = $nama;
+ $_SESSION['semail'] = $email;
+
+  //update last log
+  $qry_update = "UPDATE users SET last_log= 'now()' WHERE id='$id'";
+  $res_update = mysqli_query($con, $qry_update);
+
+  //pengalihan ke halaman index
+  ?>
+    <script>
+        document.location="index.php";
+    </script>
+  <?php
+
+}else{
     $pesan ='<div class="alert alert-danger" role="alert">
     Login tidak Valid!.
   </div>';
@@ -46,7 +68,7 @@ else{
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="index2.html"><b>SIAKAD</b>
+    <b>SIAKAD</b>
   </div>
   <!-- /.login-logo -->
   <?php
